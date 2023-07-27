@@ -15,7 +15,7 @@ namespace SoundCipher
         [SerializeField] private GameObject[] sounds;
         [SerializeField] private GameObject[] solutionSlots;
         [Space]
-        [SerializeField] private SoundButton[] soundButtons;
+        [SerializeField] private CustomButtonListener[] soundButtons;
         [SerializeField] private Button[] otherButtons;
         [Space]
 
@@ -25,6 +25,7 @@ namespace SoundCipher
         [SerializeField] private CodeGenerator codeGenerator;
         [SerializeField] private ClueCalculator clueCalculator;
         [SerializeField] private GameObject victoryPanel;
+        [SerializeField] private GameObject defeatPanel;
 
         public GameMode gameMode = GameMode.Normal;
         public int turnIndex = 0;
@@ -124,6 +125,19 @@ namespace SoundCipher
             else
             {
                 clueCalculator.CalculateClues(guess, codeGenerator.code);
+
+                if (turnIndex == 7)
+                {
+                    // LOSE :(
+                    defeatPanel.SetActive(true);
+                    StartCoroutine(PlaySolution());
+                    foreach (GameObject slot in solutionSlots)
+                    {
+                        slot.GetComponent<RawImage>().texture = speakerImage;
+                    }
+                    DisableInteractables();
+                    return;
+                }
 
                 turnIndex++;
                 _slotNumber = 0;

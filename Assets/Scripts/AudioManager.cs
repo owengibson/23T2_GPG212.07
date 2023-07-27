@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EasyAudioSystem
 {
@@ -12,6 +13,9 @@ namespace EasyAudioSystem
         public static Action<string> PlayAudio;
         public static Action StopAudio;
 
+        [SerializeField] private RawImage buttonIcon;
+        [SerializeField] private Texture speakerOn;
+        [SerializeField] private Texture speakerOff;
 
         private void Awake()
         {
@@ -47,6 +51,38 @@ namespace EasyAudioSystem
             foreach(Sound s in sounds)
             {
                 s.source.Stop();
+            }
+        }
+
+        public void Mute(string name)
+        {
+            Sound s = Array.Find(sounds, sounds => sounds.name == name);
+            s.volume = 0;
+        }
+
+        public void Unmute(string name, float volume)
+        {
+            Sound s = Array.Find(sounds, sounds => sounds.name == name);
+            s.volume = volume;
+        }
+
+        private void Start()
+        {
+            Play("Soundtrack");
+        }
+
+        public void ToggleSoundtrack()
+        {
+            Sound s = Array.Find(sounds, sounds => sounds.name == "Soundtrack");
+            if (s.source.volume == 0)
+            {
+                s.source.volume = 0.2f;
+                buttonIcon.texture = speakerOn;
+            }
+            else
+            {
+                s.source.volume = 0;
+                buttonIcon.texture = speakerOff;
             }
         }
 

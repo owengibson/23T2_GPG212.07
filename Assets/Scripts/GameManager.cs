@@ -40,7 +40,7 @@ namespace SoundCipher
 
         private void Awake()
         {
-            //gameMode = (GameMode)Enum.Parse(typeof(GameMode), PlayerPrefs.GetString("GameMode"));
+            gameMode = (GameMode)Enum.Parse(typeof(GameMode), PlayerPrefs.GetString("GameMode"));
 
             int i = 0;
             for (int x = 0; x < 8; x++)

@@ -16,8 +16,11 @@ namespace SoundCipher
         private GameObject[,] _clueSlots = new GameObject[8, 4];
         private GameObject _nextSlot;
 
-        public void CalculateClues(string[] guess, string[] solution)
+        public void CalculateClues(string[] guess, string[] solutionOriginal)
         {
+            string[] solution = new string[solutionOriginal.Length];
+            for (int i = 0; i < solution.Length; i++) solution[i] = solutionOriginal[i];
+
             if (guess.Length != 4 && solution.Length != 4)
             {
                 Debug.Log("Guess and/or code array are incorrect size.");
@@ -34,10 +37,11 @@ namespace SoundCipher
 
                 if (guess[i] == solution[i])
                 {
-                    Debug.Log($"Guess slot {i} is the correct sound in the correct spot.");
+                    Debug.Log($"Guess slot {i} is the correct sound in the correct spot. Clue slot {(gameManager.gameMode == GameMode.Normal ? slotNumber : i)} filled.");
                     _nextSlot.GetComponent<RawImage>().color = Color.green;
                     slotNumber++;
                     blacklist.Add(i);
+                    solution[i] = "checked";
                 }
             }
 
@@ -45,13 +49,17 @@ namespace SoundCipher
             // Right sound, wrong place
             for (int i = 0; i < guess.Length; i++)
             {
-                if (blacklist.Contains(i)) continue;
+                if (blacklist.Contains(i))
+                {
+                    slotNumber++;
+                    continue;
+                }
 
                 _nextSlot = _clueSlots[gameManager.turnIndex, gameManager.gameMode == GameMode.Normal ? slotNumber : i];
                 
                 if (solution.Contains(guess[i]))
                 {
-                    Debug.Log($"Guess slot {i} is the correct sound in the wrong spot.");
+                    Debug.Log($"Guess slot {i} is the correct sound in the wrong spot. Clue slot {slotNumber} filled.");
                     _nextSlot.GetComponent<RawImage>().color = Color.yellow;
                     slotNumber++;
                 }

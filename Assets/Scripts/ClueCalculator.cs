@@ -24,23 +24,36 @@ namespace SoundCipher
                 return;
             }
 
-            int _slotNumber = 0;
+            int slotNumber = 0;
+            List<int> blacklist = new();
+
+            // Right sound, right place
             for (int i = 0; i < guess.Length; i++)
             {
-                _nextSlot = _clueSlots[gameManager.turnIndex, gameManager.gameMode == GameMode.Normal ? _slotNumber : i];
+                _nextSlot = _clueSlots[gameManager.turnIndex, gameManager.gameMode == GameMode.Normal ? slotNumber : i];
 
-                // Right sound, right place
                 if (guess[i] == solution[i])
                 {
                     Debug.Log($"Guess slot {i} is the correct sound in the correct spot.");
                     _nextSlot.GetComponent<RawImage>().color = Color.green;
-                    _slotNumber++;
+                    slotNumber++;
+                    blacklist.Add(i);
                 }
-                else if (solution.Contains(guess[i]))
+            }
+
+            slotNumber = 0;
+            // Right sound, wrong place
+            for (int i = 0; i < guess.Length; i++)
+            {
+                if (blacklist.Contains(i)) continue;
+
+                _nextSlot = _clueSlots[gameManager.turnIndex, gameManager.gameMode == GameMode.Normal ? slotNumber : i];
+                
+                if (solution.Contains(guess[i]))
                 {
                     Debug.Log($"Guess slot {i} is the correct sound in the wrong spot.");
                     _nextSlot.GetComponent<RawImage>().color = Color.yellow;
-                    _slotNumber++;
+                    slotNumber++;
                 }
             }
         }
